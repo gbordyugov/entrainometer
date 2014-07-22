@@ -34,7 +34,8 @@ def period(pars, t):
 def phase(pars, t):
   c = pars['cos1'](t)
   s = pars['sin1'](t)
-  T = pars['period'](t)
+  # T = pars['period'](t)
+  T = 24.0
 
   return unwrap(2.0*pi/T*t + arctan2(s, c))
 
@@ -45,7 +46,8 @@ def sname(i): return 'sin'+str(i)
 
 def make_model(pars):
   def f(t):
-    period = pars['period'](t)
+    # period = pars['period'](t)
+    period = 24.0
     offset = pars['offset'](t)
 
     phase = 2.0*pi/period*t
@@ -71,8 +73,9 @@ def fit_oscillations(time, data, order, nmodes):
   def polynome(t):
     return fpar(polyval, t)
 
-  pars = {'period': polynome([24.0]),
-          'offset': polynome([1.0])}
+  # pars = {'period': polynome([24.0]),
+  #         'offset': polynome([1.0])}
+  pars = {'offset': polynome([1.0])}
   dummy_polynome = [0.0] * order
 
   for i in xrange(1, nmodes+1):
