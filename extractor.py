@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from numpy import loadtxt, zeros_like, arange, savetxt, vstack
-from sys import argv, exit, stdout
+from sys import argv, exit, stdout, stdin
 
 def segmenter(time, data, temp):
   dtemp = zeros_like(temp)
@@ -35,11 +35,14 @@ def extractor(u):
 if __name__ == '__main__':
   if len(argv) < 4:
     print 'usage: extractor.py filename columnno sliceno [tempno]'
+    print 'filename can be - signalizing stdin'
     exit(-1)
   
   filename =     argv[1]
-  columnno = int(argv[2])
-  sliceno  = int(argv[3])
+  if filename == '-':
+    filename = stdin
+  columnno = int(argv[2])  # column number with the time series
+  sliceno  = int(argv[3])  # slice number [0, 1, 2]
   
   if len(argv) < 5:
     tempno = columnno+1

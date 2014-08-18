@@ -70,8 +70,8 @@ def fit_oscillations(time, data, order, nmodes):
     m = make_model(p)
     return m(t)
 
-  def polynome(t):
-    return fpar(polyval, t)
+  def polynome(repr):
+    return fpar(polyval, repr)
 
   # pars = {'period': polynome([24.0]),
   #         'offset': polynome([1.0])}
