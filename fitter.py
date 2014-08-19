@@ -11,8 +11,8 @@ from fit import fit
 from fpar import fpar 
 
 def lininterp(t0, t1, x0, x1):
+  k = (x1-x0)/(t1-t0)
   def f(t):
-    k = (x1-x0)/(t1-t0)
     return x0 + k*(t-t0)
   return f
 
@@ -77,6 +77,7 @@ def fit_oscillations(time, data, order, nmodes):
   #         'offset': polynome([1.0])}
   pars = {'offset': polynome([1.0])}
   dummy_polynome = [0.0] * order
+  dummy_polynome[-1] = 1.0
 
   for i in xrange(1, nmodes+1):
     pars[cname(i)] = polynome(dummy_polynome)
