@@ -68,8 +68,8 @@ def save_graphics(s, dfit, tfit, output_dir, stride=5):
   fname = join(output_dir, 'SCN'+str(scn)+'.pdf')
   p.savefig(fname)
 
-  fname = join(output_dir, 'SCN'+str(scn)+'.svg')
-  p.savefig(fname)
+  # fname = join(output_dir, 'SCN'+str(scn)+'.svg')
+  # p.savefig(fname)
   p.close()
 
 
@@ -123,6 +123,12 @@ for scn in xrange(nSCN):
   segs = segmenter(scn_time, scn_data, scn_temp)
   for (segno, seg) in enumerate(segs):
     time, data, temp = seg[0], seg[1], seg[2]
+
+    # there can be some trailing zeros in the data
+    while data[-1] == 0.0:
+      time = time[:-1]
+      data = data[:-1]
+      temp = temp[:-1]
 
     dfit[segno] = {}; d = dfit[segno]
     print 'fitting data'
