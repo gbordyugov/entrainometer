@@ -12,11 +12,13 @@ def save_graphics(s, dfit, tfit, output_dir, stride=5):
   def decimate(u, stride=5):
     return u[::stride]
 
+  # fig = p.figure(figsize=(12, 3.5))
   fig = p.figure(figsize=(12, 3.5))
   fig.subplots_adjust(hspace=0.25, wspace=0.3, left=0.07,   right=0.98,
                                                bottom=0.16, top=0.80)
+  ncolumns = 3
   tmax = dfit[2]['time'].max() / 24.0
-  p.subplot(1, 3, 1)
+  p.subplot(1, ncolumns, 1)
   for i in xrange(3):
     time = decimate(dfit[i]['time'])/24.0
     data = decimate(dfit[i]['data'])
@@ -27,7 +29,7 @@ def save_graphics(s, dfit, tfit, output_dir, stride=5):
   p.xlabel('time [d]')
   p.ylabel('data (red), fit(blue)')
 
-  ax = p.subplot(1, 3, 2)
+  ax = p.subplot(1, ncolumns, 2)
   for i in xrange(3):
     time = decimate(dfit[i]['time'  ])/24.0
     peri = decimate(dfit[i]['period'])
@@ -44,15 +46,14 @@ def save_graphics(s, dfit, tfit, output_dir, stride=5):
   ax.annotate('T='+str(T), xy=(0.025, 0.975),
       xycoords='figure fraction', horizontalalignment='left',
       verticalalignment='top')
-  a = mean(tfit[1]['pars']['cos1'](time))
-  b = mean(tfit[1]['pars']['sin1'](time))
-  Z = hypot(a, b)
+
+  temp = tfit[1]['temp']
+  Z = (temp.max() - temp.min())/2
   ax.annotate('Z='+str(Z), xy=(0.975, 0.975),
       xycoords='figure fraction', horizontalalignment='right',
       verticalalignment='top')
-  #p.text(0.3, 20.3, 'T='+str(T))
 
-  p.subplot(1, 3, 3)
+  p.subplot(1, ncolumns, 3)
   time = decimate(dfit[1]['time'  ])/24.0
   tpha = decimate(tfit[1]['phase'])
   dpha = decimate(dfit[1]['phase'])
@@ -63,9 +64,6 @@ def save_graphics(s, dfit, tfit, output_dir, stride=5):
   p.xlim(00.0, tmax)
   m = mean(dph)
   p.ylim(m - 6.0, m + 6.0)
-  # p.text(0.0, 21.0, 'T='+str(tfit[1]['period']))
-
-
 
   fname = join(output_dir, 'SCN'+str(scn)+'.pdf')
   p.savefig(fname)
