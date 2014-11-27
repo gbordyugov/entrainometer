@@ -2,8 +2,8 @@
 
 from os.path import join
 from sys import stdin, argv, exit
-from numpy import loadtxt, savetxt, zeros_like, arange, vstack, pi, mean,\
-                  hypot
+from numpy import loadtxt, savetxt, zeros_like, arange, vstack, pi,
+                  mean, hypot
 import pylab as p
 
 from fitter import fitter
