@@ -2,9 +2,10 @@
 
 from os.path import join
 from sys import stdin, argv, exit
-from numpy import loadtxt, savetxt, zeros_like, arange, vstack, pi,
-                  mean, hypot
-import pylab as p
+from numpy import loadtxt, savetxt, zeros_like, arange, vstack, pi, mean,\
+                  hypot
+from pylab import figure, subplot, subplots_adjust, plot, xlim, ylim,\
+                  xlabel, ylabel, savefig, close
 
 from fitter import fitter
 
@@ -12,36 +13,35 @@ def save_graphics(s, dfit, tfit, output_dir, stride=5):
   def decimate(u, stride=5):
     return u[::stride]
 
-  # fig = p.figure(figsize=(12, 3.5))
-  fig = p.figure(figsize=(12, 3.5))
+  fig = figure(figsize=(12, 3.5))
   fig.subplots_adjust(hspace=0.25, wspace=0.3, left=0.07,   right=0.98,
                                                bottom=0.16, top=0.80)
   ncolumns = 3
   tmax = dfit[2]['time'].max() / 24.0
-  p.subplot(1, ncolumns, 1)
+  subplot(1, ncolumns, 1)
   for i in xrange(3):
     time = decimate(dfit[i]['time'])/24.0
     data = decimate(dfit[i]['data'])
     fit  = decimate(dfit[i]['fit' ])
-    p.plot(time, fit , 'b-')
-    p.plot(time, data, 'r.')
-  p.xlim(00.0, tmax)
-  p.xlabel('time [d]')
-  p.ylabel('data (red), fit(blue)')
+    plot(time, fit , 'b-')
+    plot(time, data, 'r.')
+  xlim(00.0, tmax)
+  xlabel('time [d]')
+  ylabel('data (red), fit(blue)')
 
-  ax = p.subplot(1, ncolumns, 2)
+  ax = subplot(1, ncolumns, 2)
   for i in xrange(3):
     time = decimate(dfit[i]['time'  ])/24.0
     peri = decimate(dfit[i]['period'])
-    p.plot(time, peri, 'b-', linewidth=2.0)
-  p.xlabel('time [d]')
-  p.ylabel('tau (blue), T (green) [h]')
-  p.xlim(00.0, tmax)
-  p.ylim(20.0, 27.0)
+    plot(time, peri, 'b-', linewidth=2.0)
+  xlabel('time [d]')
+  ylabel('tau (blue), T (green) [h]')
+  xlim(00.0, tmax)
+  ylim(20.0, 27.0)
 
   time = decimate(tfit[1]['time'  ])/24.0
   pert = decimate(tfit[1]['period'])
-  p.plot(time, pert, 'g--', linewidth=2.0)
+  plot(time, pert, 'g--', linewidth=2.0)
   T = mean(pert)
   ax.annotate('T='+str(T), xy=(0.025, 0.975),
       xycoords='figure fraction', horizontalalignment='left',
@@ -53,24 +53,24 @@ def save_graphics(s, dfit, tfit, output_dir, stride=5):
       xycoords='figure fraction', horizontalalignment='right',
       verticalalignment='top')
 
-  p.subplot(1, ncolumns, 3)
+  subplot(1, ncolumns, 3)
   time = decimate(dfit[1]['time'  ])/24.0
   tpha = decimate(tfit[1]['phase'])
   dpha = decimate(dfit[1]['phase'])
   dph  = (tpha - dpha)/2.0/pi*24.0
-  p.plot(time, dph, 'b-', linewidth=2.0)
-  p.xlabel('time [d]')
-  p.ylabel('phase diff [h]')
-  p.xlim(00.0, tmax)
+  plot(time, dph, 'b-', linewidth=2.0)
+  xlabel('time [d]')
+  ylabel('phase diff [h]')
+  xlim(00.0, tmax)
   m = mean(dph)
-  p.ylim(m - 6.0, m + 6.0)
+  ylim(m - 6.0, m + 6.0)
 
   fname = join(output_dir, 'SCN'+str(scn)+'.pdf')
-  p.savefig(fname)
+  savefig(fname)
 
   # fname = join(output_dir, 'SCN'+str(scn)+'.svg')
-  # p.savefig(fname)
-  p.close()
+  # savefig(fname)
+  close()
 
 
 def segmenter(time, data, temp):
