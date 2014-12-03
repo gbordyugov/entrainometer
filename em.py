@@ -2,46 +2,44 @@
 
 from os.path import join
 from sys import stdin, argv, exit
-from numpy import loadtxt, savetxt, zeros_like, arange, vstack, pi, mean,\
-                  hypot
-from pylab import figure, subplot, subplots_adjust, plot, xlim, ylim,\
-                  xlabel, ylabel, savefig, close
+from numpy import loadtxt, zeros_like, arange, pi, mean
+from pylab import figure, subplots_adjust, gca
 
 from fitter import fitter
 
-def save_graphics(s, dfit, tfit, output_dir, stride=5):
-  def decimate(u, stride=5):
-    return u[::stride]
+def decimate(u, stride=5):
+  return u[::stride]
 
-  fig = figure(figsize=(12, 3.5))
-  fig.subplots_adjust(hspace=0.25, wspace=0.3, left=0.07,   right=0.98,
-                                               bottom=0.16, top=0.80)
-  ncolumns = 3
-  tmax = dfit[2]['time'].max() / 24.0
-  subplot(1, ncolumns, 1)
-  for i in xrange(3):
-    time = decimate(dfit[i]['time'])/24.0
-    data = decimate(dfit[i]['data'])
-    fit  = decimate(dfit[i]['fit' ])
-    plot(time, fit , 'b-')
-    plot(time, data, 'r.')
-  xlim(00.0, tmax)
-  xlabel('time [d]')
-  ylabel('data (red), fit(blue)')
+def plot_fit(dfit, tfit, ax=None, stride=5):
+  if not ax: ax = gca()
 
-  ax = subplot(1, ncolumns, 2)
-  for i in xrange(3):
-    time = decimate(dfit[i]['time'  ])/24.0
-    peri = decimate(dfit[i]['period'])
-    plot(time, peri, 'b-', linewidth=2.0)
-  xlabel('time [d]')
-  ylabel('tau (blue), T (green) [h]')
-  xlim(00.0, tmax)
-  ylim(20.0, 27.0)
+  tmax = dfit[2]['time'].max()/24.0
+  for (ix, d) in dfit.items():
+    time = decimate(d['time'])/24.0
+    data = decimate(d['data'])
+    fit  = decimate(d['fit' ])
+    ax.plot(time, fit , 'b-')
+    ax.plot(time, data, 'r.')
+  ax.set_xlim(00.0, tmax)
+  ax.set_xlabel('time [d]')
+  ax.set_ylabel('data (red), fit(blue)')
+
+
+def plot_period(dfit, tfit, ax=None, stride=5):
+  if not ax: ax = gca()
+
+  for (ix, d) in dfit.items():
+    time = decimate(d['time'  ])/24.0
+    peri = decimate(d['period'])
+    ax.plot(time, peri, 'b-', linewidth=2.0)
+  ax.set_xlabel('time [d]')
+  ax.set_ylabel('tau (blue), T (green) [h]')
+  ax.set_xlim(00.0, dfit[2]['time'].max()/24.0)
+  ax.set_ylim(20.0, 27.0)
 
   time = decimate(tfit[1]['time'  ])/24.0
   pert = decimate(tfit[1]['period'])
-  plot(time, pert, 'g--', linewidth=2.0)
+  ax.plot(time, pert, 'g--', linewidth=2.0)
   T = mean(pert)
   ax.annotate('T='+str(T), xy=(0.025, 0.975),
       xycoords='figure fraction', horizontalalignment='left',
@@ -53,24 +51,23 @@ def save_graphics(s, dfit, tfit, output_dir, stride=5):
       xycoords='figure fraction', horizontalalignment='right',
       verticalalignment='top')
 
-  subplot(1, ncolumns, 3)
+
+def plot_phase(dfit, tfit, ax=None, stride=5):
+  if not ax: ax = gca()
+
   time = decimate(dfit[1]['time'  ])/24.0
   tpha = decimate(tfit[1]['phase'])
   dpha = decimate(dfit[1]['phase'])
   dph  = (tpha - dpha)/2.0/pi*24.0
-  plot(time, dph, 'b-', linewidth=2.0)
-  xlabel('time [d]')
-  ylabel('phase diff [h]')
-  xlim(00.0, tmax)
+
+  ax.plot(time, dph, 'b-', linewidth=2.0)
+
+  ax.set_xlabel('time [d]')
+  ax.set_ylabel('phase diff [h]')
+
   m = mean(dph)
-  ylim(m - 6.0, m + 6.0)
-
-  fname = join(output_dir, 'SCN'+str(scn)+'.pdf')
-  savefig(fname)
-
-  # fname = join(output_dir, 'SCN'+str(scn)+'.svg')
-  # savefig(fname)
-  close()
+  ax.set_xlim(00.0, dfit[2]['time'].max()/24.0)
+  ax.set_ylim(m - 6.0, m + 6.0)
 
 
 def segmenter(time, data, temp):
@@ -143,4 +140,16 @@ for scn in xrange(nSCN):
       t['temp'] = temp
       t['phase'], t['period'], t['fit'], t['pars'] = fitter(time, temp)
 
-  save_graphics(scn, dfit, tfit, output_dir)
+  fig = figure(figsize=(12, 3.5))
+  fig.subplots_adjust(hspace=0.25, wspace=0.3, left=0.07,   right=0.98,
+                                               bottom=0.16, top=0.80)
+  ax1 = fig.add_subplot(131)
+  ax2 = fig.add_subplot(132)
+  ax3 = fig.add_subplot(133)
+  plot_fit   (dfit, tfit, ax1, 5)
+  plot_period(dfit, tfit, ax2, 5)
+  plot_phase (dfit, tfit, ax3, 5)
+
+  fname = output_dir + '/SCN%02d.pdf'%scn
+  print 'exporting to %s'%fname
+  fig.savefig(output_dir + '/SCN%02d.pdf'%scn)
