@@ -3,7 +3,7 @@
 from os.path import join
 from sys import stdin, argv, exit
 from numpy import loadtxt, zeros_like, arange, pi, mean
-from pylab import figure, subplots_adjust, gca
+from pylab import figure, gca
 
 from fitter import fitter
 
@@ -16,7 +16,7 @@ def plot_fit(dfit, tfit, ax=None, stride=5):
   if not ax: ax = gca()
 
   tmax = dfit[2]['time'].max()/24.0
-  for (ix, d) in dfit.items():
+  for d in dfit:
     time = decimate(d['time'])/24.0
     data = decimate(d['data'])
     fit  = decimate(d['fit' ])
@@ -30,7 +30,7 @@ def plot_fit(dfit, tfit, ax=None, stride=5):
 def plot_period(dfit, tfit, ax=None, stride=5):
   if not ax: ax = gca()
 
-  for (ix, d) in dfit.items():
+  for d in dfit:
     time = decimate(d['time'  ])/24.0
     peri = decimate(d['period'])
     ax.plot(time, peri, 'b-', linewidth=2.0)
@@ -39,15 +39,15 @@ def plot_period(dfit, tfit, ax=None, stride=5):
   ax.set_xlim(00.0, dfit[2]['time'].max()/24.0)
   ax.set_ylim(20.0, 27.0)
 
-  time = decimate(tfit[1]['time'  ])/24.0
-  pert = decimate(tfit[1]['period'])
+  time = decimate(tfit[0]['time'  ])/24.0
+  pert = decimate(tfit[0]['period'])
   ax.plot(time, pert, 'g--', linewidth=2.0)
   T = mean(pert)
   ax.annotate('T='+str(T), xy=(0.025, 0.975),
       xycoords='figure fraction', horizontalalignment='left',
       verticalalignment='top')
 
-  temp = tfit[1]['temp']
+  temp = tfit[0]['temp']
   Z = (temp.max() - temp.min())/2
   ax.annotate('Z='+str(Z), xy=(0.975, 0.975),
       xycoords='figure fraction', horizontalalignment='right',
@@ -58,8 +58,10 @@ def plot_phase(dfit, tfit, ax=None, stride=5):
   if not ax: ax = gca()
 
   time = decimate(dfit[1]['time'  ])/24.0
-  tpha = decimate(tfit[1]['phase'])
+
+  tpha = decimate(tfit[0]['phase'])
   dpha = decimate(dfit[1]['phase'])
+
   dph  = (tpha - dpha)/2.0/pi*24.0
 
   ax.plot(time, dph, 'b-', linewidth=2.0)
@@ -117,7 +119,8 @@ for scn in xrange(nSCN):
   scn_data = u[data_ix]
   scn_temp = u[temp_ix]
 
-  dfit = {}; tfit = {}
+  dfit = []
+  tfit = []
 
   segs = segmenter(scn_time, scn_data, scn_temp)
   for (segno, seg) in enumerate(segs):
@@ -129,18 +132,20 @@ for scn in xrange(nSCN):
       data = data[:-1]
       temp = temp[:-1]
 
-    dfit[segno] = {}; d = dfit[segno]
+    d = {}
     print 'fitting data'
     d['time'] = time
     d['data'] = data
     d['phase'], d['period'], d['fit'], d['pars'] = fitter(time, data)
+    dfit.append(d)
 
     if segno == 1:
-      tfit[segno] = {}; t = tfit[segno]
+      t = {}
       print 'fitting temperature'
       t['time'] = time
       t['temp'] = temp
       t['phase'], t['period'], t['fit'], t['pars'] = fitter(time, temp)
+      tfit.append(t)
 
   fig = figure(figsize=(12, 3.5))
   fig.subplots_adjust(hspace=0.25, wspace=0.3, left=0.07,   right=0.98,
