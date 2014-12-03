@@ -6,10 +6,7 @@ from numpy import zeros_like, abs, arange, loadtxt
 from pylab import figure 
 
 
-def plot_scn(time, data, temp):
-  fig = figure()
-  ax = fig.add_subplot(111)
-
+def plot_scn(time, data, temp, ax):
   time = time/24.0
   ax.plot(time, data, '-')
 
@@ -19,8 +16,6 @@ def plot_scn(time, data, temp):
   ax.set_xlabel('time [h]')
   ax.set_ylabel('Bioluminescence, temperature')
   ax.set_xlim(time.min()-1.0, time.max()+1.0)
-
-  return fig
 
 
 def segmenter(time, data, temp):
@@ -68,7 +63,10 @@ def main(filename, output_dir):
       data = data[:-1]
       temp = temp[:-1]
       
-    fig = plot_scn(time, data, temp)
+    fig = figure()
+    ax  = fig.add_subplot(111)
+    plot_scn(time, data, temp, ax)
+
     fname = output_dir + '/SCN%02d.pdf'%scn
     print 'saving to %s'%fname
     fig.savefig(fname)
