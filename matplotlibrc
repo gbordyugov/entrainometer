@@ -1,0 +1,5 @@
+backend                 : TkAgg
+lines.linewidth         : 2.0     # line width in points
+font.size               : 18.0
+axes.linewidth          : 1.0     # edge linewidth
+axes.labelsize          : medium  # fontsize of the x any y labels
