@@ -7,8 +7,10 @@ from pylab import figure, subplots_adjust, gca
 
 from fitter import fitter
 
+
 def decimate(u, stride=5):
   return u[::stride]
+
 
 def plot_fit(dfit, tfit, ax=None, stride=5):
   if not ax: ax = gca()
