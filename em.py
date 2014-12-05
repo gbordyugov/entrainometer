@@ -5,7 +5,8 @@ from sys import stdin, argv, exit
 from numpy import loadtxt, zeros_like, arange, pi, mean
 from pylab import figure, gca
 
-from fitter import fitter
+from  fitter import  fitter
+from hfitter import hfitter
 
 
 def decimate(u, stride=5):
