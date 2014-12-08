@@ -13,7 +13,21 @@ def decimate(u, stride=5):
   return u[::stride]
 
 
-def plot_fit(dfit, tfit, ax=None, stride=5):
+def plot_zg_fit(dfit, tfit, ax=None, stride=5):
+  if not ax: ax = gca()
+
+  tmax = dfit[2]['time'].max()/24.0
+  t = tfit[0]
+  time = decimate(t['time'])/24.0
+  data = decimate(t['temp'])
+  fit  = decimate(t['fit' ])
+  ax.plot(time, fit , 'b-')
+  ax.plot(time, data, 'r.')
+  ax.set_xlabel('time [d]')
+  ax.set_ylabel('data (red), fit(blue)')
+
+
+def plot_data_fit(dfit, tfit, ax=None, stride=5):
   if not ax: ax = gca()
 
   tmax = dfit[2]['time'].max()/24.0
@@ -145,18 +159,23 @@ for scn in xrange(nSCN):
       print 'fitting temperature'
       t['time'] = time
       t['temp'] = temp
-      t['phase'], t['period'], t['fit'], t['pars'] = fitter(time, temp)
+      t['phase'], t['period'], t['fit'], t['pars'] = fitter(time, temp, 4, 4)
       tfit.append(t)
 
-  fig = figure(figsize=(12, 3.5))
+  fig = figure(figsize=(3*4, 3.5))
+  # fig = figure(figsize=(4*4, 3.5))
   fig.subplots_adjust(hspace=0.25, wspace=0.3, left=0.07,   right=0.98,
                                                bottom=0.16, top=0.80)
-  ax1 = fig.add_subplot(131)
-  ax2 = fig.add_subplot(132)
-  ax3 = fig.add_subplot(133)
-  plot_fit   (dfit, tfit, ax1, 5)
-  plot_period(dfit, tfit, ax2, 5)
-  plot_phase (dfit, tfit, ax3, 5)
+  n = 130
+  ax1 = fig.add_subplot(n+1)
+  ax2 = fig.add_subplot(n+2)
+  ax3 = fig.add_subplot(n+3)
+  # ax4 = fig.add_subplot(n+4)
+
+  plot_data_fit(dfit, tfit, ax1, 5)
+  plot_period  (dfit, tfit, ax2, 5)
+  plot_phase   (dfit, tfit, ax3, 5)
+  # plot_zg_fit  (dfit, tfit, ax4, 5)
 
   fname = output_dir + '/SCN%02d.pdf'%scn
   print 'exporting to %s'%fname
