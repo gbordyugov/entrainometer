@@ -2,91 +2,11 @@
 
 from os.path import join
 from sys import stdin, argv, exit
-from numpy import loadtxt, zeros_like, arange, pi, mean
-from pylab import figure, gca
+from numpy import loadtxt, zeros_like, arange
+from pickle import dump, HIGHEST_PROTOCOL
 
 from  fitter import  fitter
 from hfitter import hfitter
-
-
-def decimate(u, stride=5):
-  return u[::stride]
-
-
-def plot_zg_fit(dfit, tfit, ax=None, stride=5):
-  if not ax: ax = gca()
-
-  tmax = dfit[2]['time'].max()/24.0
-  t = tfit[0]
-  time = decimate(t['time'])/24.0
-  data = decimate(t['temp'])
-  fit  = decimate(t['fit' ])
-  ax.plot(time, fit , 'b-')
-  ax.plot(time, data, 'r.')
-  ax.set_xlabel('time [d]')
-  ax.set_ylabel('data (red), fit(blue)')
-
-
-def plot_data_fit(dfit, tfit, ax=None, stride=5):
-  if not ax: ax = gca()
-
-  tmax = dfit[2]['time'].max()/24.0
-  for d in dfit:
-    time = decimate(d['time'])/24.0
-    data = decimate(d['data'])
-    fit  = decimate(d['fit' ])
-    ax.plot(time, fit , 'b-')
-    ax.plot(time, data, 'r.')
-  ax.set_xlim(00.0, tmax)
-  ax.set_xlabel('time [d]')
-  ax.set_ylabel('data (red), fit(blue)')
-
-
-def plot_period(dfit, tfit, ax=None, stride=5):
-  if not ax: ax = gca()
-
-  for d in dfit:
-    time = decimate(d['time'  ])/24.0
-    peri = decimate(d['period'])
-    ax.plot(time, peri, 'b-', linewidth=2.0)
-  ax.set_xlabel('time [d]')
-  ax.set_ylabel('tau (blue), T (green) [h]')
-  ax.set_xlim(00.0, dfit[2]['time'].max()/24.0)
-  ax.set_ylim(20.0, 27.0)
-
-  time = decimate(tfit[0]['time'  ])/24.0
-  pert = decimate(tfit[0]['period'])
-  ax.plot(time, pert, 'g--', linewidth=2.0)
-  T = mean(pert)
-  ax.annotate('T='+str(T), xy=(0.025, 0.975),
-      xycoords='figure fraction', horizontalalignment='left',
-      verticalalignment='top')
-
-  temp = tfit[0]['temp']
-  Z = (temp.max() - temp.min())/2
-  ax.annotate('Z='+str(Z), xy=(0.975, 0.975),
-      xycoords='figure fraction', horizontalalignment='right',
-      verticalalignment='top')
-
-
-def plot_phase(dfit, tfit, ax=None, stride=5):
-  if not ax: ax = gca()
-
-  time = decimate(dfit[1]['time'  ])/24.0
-
-  tpha = decimate(tfit[0]['phase'])
-  dpha = decimate(dfit[1]['phase'])
-
-  dph  = (tpha - dpha)/2.0/pi*24.0
-
-  ax.plot(time, dph, 'b-', linewidth=2.0)
-
-  ax.set_xlabel('time [d]')
-  ax.set_ylabel('phase diff [h]')
-
-  m = mean(dph)
-  ax.set_xlim(00.0, dfit[2]['time'].max()/24.0)
-  ax.set_ylim(m - 6.0, m + 6.0)
 
 
 def segmenter(time, data, temp):
@@ -112,7 +32,7 @@ def segmenter(time, data, temp):
 # main entry point
 
 if len(argv) < 3:
-  print 'using: entrainometer.py data.txt split_dir'
+  print 'using: entrainometer.py data.txt output_dir'
   exit(-1)
 
 filename   = argv[1]
@@ -162,21 +82,11 @@ for scn in xrange(nSCN):
       t['phase'], t['period'], t['fit'], t['pars'] = fitter(time, temp, 4, 4)
       tfit.append(t)
 
-  fig = figure(figsize=(3*4, 3.5))
-  # fig = figure(figsize=(4*4, 3.5))
-  fig.subplots_adjust(hspace=0.25, wspace=0.3, left=0.07,   right=0.98,
-                                               bottom=0.16, top=0.80)
-  n = 130
-  ax1 = fig.add_subplot(n+1)
-  ax2 = fig.add_subplot(n+2)
-  ax3 = fig.add_subplot(n+3)
-  # ax4 = fig.add_subplot(n+4)
+  di = {}
+  di['datafit'] = dfit
+  di['tempfit'] = tfit
 
-  plot_data_fit(dfit, tfit, ax1, 5)
-  plot_period  (dfit, tfit, ax2, 5)
-  plot_phase   (dfit, tfit, ax3, 5)
-  # plot_zg_fit  (dfit, tfit, ax4, 5)
-
-  fname = output_dir + '/SCN%02d.pdf'%scn
-  print 'exporting to %s'%fname
-  fig.savefig(output_dir + '/SCN%02d.pdf'%scn)
+  fname = output_dir + '/SCN%02d.pickle'%scn
+  fhandle = open(fname, 'w')
+  dump(di, fhandle)
+  fhandle.close()

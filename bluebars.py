@@ -82,4 +82,3 @@ filename   = argv[1]
 output_dir = argv[2]
 
 main(filename, output_dir)
-

@@ -10,5 +10,5 @@ function runem {
   cd -
 }
 
-runem data/t24/ute-T24.txt        data/t24/output/figures
-runem data/t22-26/ute-T22-T26.txt data/t22-26/output/figures
+runem data/t24/ute-T24.txt        data/t24/output/pickles
+runem data/t22-26/ute-T22-T26.txt data/t22-26/output/pickles
