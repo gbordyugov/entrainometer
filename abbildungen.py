@@ -14,7 +14,6 @@ t24dir   = "data/t24/output/pickles/"
 # SCN04
 
 def dataplot(dfit, tfit, ax, stride=5):
-
   plot_bluebars(dfit[1]['time'], dfit[1]['data'], tfit[0]['temp'], ax)
   for i in xrange(3):
     t = dfit[i]['time'][::stride]/24.0
@@ -47,7 +46,7 @@ def datafitplot(dfit, tfit, ax, stride=5):
 fig = figure(figsize=(3*4, 1*3.0))
 fig.subplots_adjust(hspace = 0.25, wspace = 0.30,
                     left   = 0.07, right  = 0.98,
-                    bottom = 0.2, top    = 0.90)
+                    bottom = 0.20, top    = 0.90)
 
 ax1 = fig.add_subplot(121)
 ax2 = fig.add_subplot(122)
@@ -58,6 +57,8 @@ dfit, tfit = loadfits(t2226dir+"SCN04.pickle")
 dataplot(dfit, tfit, ax2)
 
 fig.savefig('first.pdf')
+
+
 
 #
 # figure second
@@ -101,12 +102,6 @@ ax2.set_ylabel("period")
 # ax3
 #
 plot_phase(dfit, tfit, ax3)
-
-ax3.set_xlabel("time [d]")
-ax3.set_ylabel("phase diff [h]")
-
-ax3.set_xlim(0.0, dfit[2]['time'].max()/24.0)
-
 fig.savefig('second.pdf')
 
 
