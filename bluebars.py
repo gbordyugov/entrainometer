@@ -6,12 +6,16 @@ from numpy import zeros_like, abs, arange, loadtxt
 from pylab import figure 
 
 
+def plot_bluebars(time, data, temp, ax):
+  time = time/24.0
+  normalized_temp = (temp-temp.min())/(temp.max()-temp.min())*2.0
+  ax.fill_between(time, 2.0, normalized_temp, color='blue', alpha=0.3)
+
+
 def plot_scn(time, data, temp, ax):
   time = time/24.0
   ax.plot(time, data, '-')
 
-  normalized_temp = (temp-temp.min())/(temp.max()-temp.min())*2.0
-  ax.fill_between(time, 2.0, normalized_temp, color='blue', alpha=0.3)
 
   ax.set_xlabel('time [h]')
   ax.set_ylabel('Bioluminescence, temperature')
@@ -66,6 +70,7 @@ def main(filename, output_dir):
     fig = figure()
     ax  = fig.add_subplot(111)
     plot_scn(time, data, temp, ax)
+    plot_bluebars(time, data, temp, ax)
 
     fname = output_dir + '/SCN%02d.pdf'%scn
     print 'saving to %s'%fname

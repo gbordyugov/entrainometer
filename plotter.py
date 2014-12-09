@@ -12,6 +12,8 @@ def decimate(u, stride=5):
 
 
 def plot_zg_fit(dfit, tfit, ax=None, stride=5):
+  return 'Broken, do not use'
+
   if not ax: ax = gca()
 
   tmax = dfit[2]['time'].max()/24.0
@@ -25,22 +27,18 @@ def plot_zg_fit(dfit, tfit, ax=None, stride=5):
   ax.set_ylabel('data (red), fit(blue)')
 
 
-def plot_data_fit(dfit, tfit, ax=None, stride=5):
+def plot_data_fit(time, data, fit, ax=None, stride=5):
   if not ax: ax = gca()
 
-  tmax = dfit[2]['time'].max()/24.0
-  for d in dfit:
-    time = decimate(d['time'])/24.0
-    data = decimate(d['data'])
-    fit  = decimate(d['fit' ])
-    ax.plot(time, fit , 'b-')
-    ax.plot(time, data, 'r.')
-  ax.set_xlim(00.0, tmax)
+  time = time/24.0
+  ax.plot(decimate(time), decimate(fit) , 'b-')
+  ax.plot(decimate(time), decimate(data), 'r.')
+
   ax.set_xlabel('time [d]')
   ax.set_ylabel('data (red), fit(blue)')
 
 
-def plot_period(dfit, tfit, ax=None, stride=5):
+def plot_periods(dfit, tfit, ax=None, stride=5):
   if not ax: ax = gca()
 
   for d in dfit:
@@ -126,8 +124,10 @@ def savestandardpdf(dfit, tfit, foutput):
   ax2 = fig.add_subplot(n+2)
   ax3 = fig.add_subplot(n+3)
 
-  plot_data_fit(dfit, tfit, ax1, 5)
-  plot_period  (dfit, tfit, ax2, 5)
+  for d in dfit:
+    plot_data_fit(d['time'], d['data'], d['fit'], ax1, 5)
+
+  plot_periods (dfit, tfit, ax2, 5)
   plot_phase   (dfit, tfit, ax3, 5)
 
   fig.savefig(foutput)
@@ -160,4 +160,3 @@ if "__main__" == __name__:
     exit(-1)
   
   main(argv[1], argv[2])
-

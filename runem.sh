@@ -5,9 +5,9 @@ function runem {
   output_dir=$2
 
   ./em.py $data_file $output_dir
-  cd $output_dir
-  ./nup.sh
-  cd -
+  # cd $output_dir
+  # ./nup.sh
+  # cd -
 }
 
 runem data/t24/ute-T24.txt        data/t24/output/pickles
