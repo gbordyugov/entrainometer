@@ -56,6 +56,10 @@ dataplot(dfit, tfit, ax1)
 dfit, tfit = loadfits(t2226dir+"SCN04.pickle")
 dataplot(dfit, tfit, ax2)
 
+ax1.text(0.9, 0.87, "(A)", transform=ax1.transAxes)
+ax2.text(0.9, 0.87, "(B)", transform=ax2.transAxes)
+# ax3.text(0.85, 0.07, "(C)", transform=ax3.transAxes)
+
 fig.savefig('first.pdf')
 
 
@@ -102,6 +106,10 @@ ax2.set_ylabel("period")
 # ax3
 #
 plot_phase(dfit, tfit, ax3)
+ax1.text(0.96, 0.07, "(A)", transform=ax1.transAxes)
+ax2.text(0.90, 0.07, "(B)", transform=ax2.transAxes)
+ax3.text(0.90, 0.07, "(C)", transform=ax3.transAxes)
+
 fig.savefig('second.pdf')
 
 
@@ -144,5 +152,11 @@ def mplotphases(names, ax):
 
 mplotphases(namesLarger,  ax3)
 mplotphases(namesSmaller, ax6)
+ax1.text(0.85, 0.07, "(A)", transform=ax1.transAxes)
+ax2.text(0.85, 0.07, "(B)", transform=ax2.transAxes)
+ax3.text(0.85, 0.07, "(C)", transform=ax3.transAxes)
+ax4.text(0.85, 0.07, "(D)", transform=ax4.transAxes)
+ax5.text(0.85, 0.07, "(E)", transform=ax5.transAxes)
+ax6.text(0.85, 0.07, "(F)", transform=ax6.transAxes)
 
 fig.savefig("third.pdf")
