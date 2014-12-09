@@ -46,7 +46,7 @@ def datafitplot(dfit, tfit, ax, stride=5):
 fig = figure(figsize=(3*4, 1*3.0))
 fig.subplots_adjust(hspace = 0.25, wspace = 0.30,
                     left   = 0.07, right  = 0.98,
-                    bottom = 0.20, top    = 0.90)
+                    bottom = 0.21, top    = 0.90)
 
 ax1 = fig.add_subplot(121)
 ax2 = fig.add_subplot(122)
@@ -72,7 +72,7 @@ dfit, tfit = loadfits(t24dir+"SCN05.pickle")
 fig = figure(figsize=(3*4, 2*3.0))
 fig.subplots_adjust(hspace = 0.32, wspace = 0.25,
                     left   = 0.07, right  = 0.98,
-                    bottom = 0.10, top    = 0.98)
+                    bottom = 0.11, top    = 0.97)
 
 
 gridspec = GridSpec(2, 2)
@@ -121,7 +121,7 @@ fig.savefig('second.pdf')
 fig = figure(figsize=(3*4, 2*3.0))
 fig.subplots_adjust(hspace = 0.32, wspace = 0.30,
                     left   = 0.07, right  = 0.98,
-                    bottom = 0.10, top    = 0.98)
+                    bottom = 0.11, top    = 0.97)
 
 ax1 = fig.add_subplot(2, 3, 1)
 ax2 = fig.add_subplot(2, 3, 2)
