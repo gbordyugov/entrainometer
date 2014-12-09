@@ -8,7 +8,10 @@ from pylab import figure
 
 def plot_bluebars(time, data, temp, ax):
   time = time/24.0
-  normalized_temp = (temp-temp.min())/(temp.max()-temp.min())*2.0
+  # normalized_temp = (temp-temp.min())/(temp.max()-temp.min())*2.0
+  mean = temp.mean()
+  normalized_temp = zeros_like(temp)
+  normalized_temp[temp > mean] = 2.0
   ax.fill_between(time, 2.0, normalized_temp, color='blue', alpha=0.3)
 
 
@@ -55,8 +58,6 @@ def main(filename, output_dir):
     scn_data = u[data_ix]
     scn_temp = u[temp_ix]
   
-    dfit = {}; tfit = {}
-  
     segs = segmenter(scn_time, scn_data, scn_temp)
     seg = segs[1]
     time, data, temp = seg[0], seg[1], seg[2]
@@ -79,11 +80,12 @@ def main(filename, output_dir):
 
 # main entry point
 
-if len(argv) < 3:
-  print 'using: entrainometer.py data.txt graphics_dir'
-  exit(-1)
-
-filename   = argv[1]
-output_dir = argv[2]
-
-main(filename, output_dir)
+if "__main__" == __name__:
+  if len(argv) < 3:
+    print 'using: entrainometer.py data.txt graphics_dir'
+    exit(-1)
+  
+  filename   = argv[1]
+  output_dir = argv[2]
+  
+  main(filename, output_dir)
