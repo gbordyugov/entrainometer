@@ -18,7 +18,7 @@ def dataplot(dfit, tfit, ax, stride=5):
   for i in xrange(3):
     t = dfit[i]['time'][::stride]/24.0
     d = dfit[i]['data'][::stride]
-    ax.plot(t, d, color="blue")
+    ax.plot(t, d, color="red")
 
   ax.set_xlabel('time [d]')
   ax.set_ylabel('bioluminescence')
@@ -150,8 +150,9 @@ def mplotphases(names, ax):
     dfit, tfit = loadfits(name)
     plot_phase(dfit, tfit, ax)
 
-mplotphases(namesLarger,  ax3)
-mplotphases(namesSmaller, ax6)
+mplotphases(namesLarger,  ax6)
+mplotphases(namesSmaller, ax3)
+
 ax1.text(0.85, 0.07, "(A)", transform=ax1.transAxes)
 ax2.text(0.85, 0.07, "(B)", transform=ax2.transAxes)
 ax3.text(0.85, 0.07, "(C)", transform=ax3.transAxes)
