@@ -61,6 +61,7 @@ ax2.text(0.9, 0.87, "(B)", transform=ax2.transAxes)
 # ax3.text(0.85, 0.07, "(C)", transform=ax3.transAxes)
 
 fig.savefig('first.pdf')
+fig.savefig('first.tiff')
 
 
 
@@ -111,6 +112,7 @@ ax2.text(0.90, 0.07, "(B)", transform=ax2.transAxes)
 ax3.text(0.90, 0.07, "(C)", transform=ax3.transAxes)
 
 fig.savefig('second.pdf')
+fig.savefig('second.tiff')
 
 
 
@@ -144,14 +146,15 @@ idxSmaller = [0, 1, 6, 7]
 idxLarger  = [2, 4]
 namesSmaller = [t2226dir+"SCN%02d.pickle"%i for i in idxSmaller]
 namesLarger  = [t2226dir+"SCN%02d.pickle"%i for i in idxLarger ]
+clrs         = ['blue', 'red', 'darkgreen', 'darkviolet']
 
-def mplotphases(names, ax):
-  for name in names:
+def mplotphases(names, ax, colors):
+  for (name, color) in zip(names, colors):
     dfit, tfit = loadfits(name)
-    plot_phase(dfit, tfit, ax)
+    plot_phase(dfit, tfit, ax, 5, color)
 
-mplotphases(namesLarger,  ax6)
-mplotphases(namesSmaller, ax3)
+mplotphases(namesLarger,  ax6, clrs)
+mplotphases(namesSmaller, ax3, clrs)
 
 ax1.text(0.85, 0.07, "(A)", transform=ax1.transAxes)
 ax2.text(0.85, 0.07, "(B)", transform=ax2.transAxes)
@@ -161,3 +164,4 @@ ax5.text(0.85, 0.07, "(E)", transform=ax5.transAxes)
 ax6.text(0.85, 0.07, "(F)", transform=ax6.transAxes)
 
 fig.savefig("third.pdf")
+fig.savefig("third.tiff")

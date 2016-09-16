@@ -65,7 +65,7 @@ def plot_periods(dfit, tfit, ax=None, stride=5):
       verticalalignment='top')
 
 
-def plot_phase(dfit, tfit, ax=None, stride=5):
+def plot_phase(dfit, tfit, ax=None, stride=5, color='blue'):
   if not ax: ax = gca()
 
   time = decimate(dfit[1]['time'  ])/24.0
@@ -75,7 +75,7 @@ def plot_phase(dfit, tfit, ax=None, stride=5):
 
   dph  = (tpha - dpha)/2.0/pi*24.0
 
-  ax.plot(time, dph, 'b-', linewidth=2.0)
+  ax.plot(time, dph, 'b-', linewidth=2.0, color=color)
 
   ax.set_xlabel('time [d]')
   ax.set_ylabel('phase diff [h]')

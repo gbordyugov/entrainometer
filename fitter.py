@@ -57,7 +57,7 @@ def make_model(pars):
     while (cname(i) in pars) and (sname(i) in pars):
       c = pars[cname(i)](t)
       s = pars[sname(i)](t)
-      x = x + c*sin(i*phase) + s*cos(i*phase)
+      x = x + c*sin(float(i)*phase) + s*cos(float(i)*phase)
       i = i + 1
 
     return x
