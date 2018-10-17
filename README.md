@@ -1,1 +1,1 @@
-# Extracting amptlitude/period/phase from bioluminescence data
+# Extracting amplitude/period/phase from bioluminescence data
